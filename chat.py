@@ -6,11 +6,12 @@ client = OpenAI(
     base_url="https://api.deepseek.com"
 )
 
-# 聊天记录
+# 聊天记录（异常捕捉）
 try:
     with open("messages.json", "r", encoding="utf-8") as f:
         messages = json.load(f)
 
+#讲用户记录保存为JSON文件，json文件为空或者不存在时，初始化聊天记录
 except (FileNotFoundError, json.JSONDecodeError):
     messages = [
         {
