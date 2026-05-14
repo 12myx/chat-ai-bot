@@ -18,16 +18,42 @@
 
     <div id="chat"></div>
 
-    <script>
-        function sendMessage() {
-            const input = document.getElementById("userInput")
+<script>
 
-            const message = input.value
+async function sendMessage() {
 
-            document.getElementById("chat").innerHTML +=
-                "<p>你：" + message + "</p>"
-        }
-    </script>
+    const input = document.getElementById("userInput")
+
+    const message = input.value
+
+    // 显示用户消息
+    document.getElementById("chat").innerHTML +=
+        "<p>你：" + message + "</p>"
+
+    // 发送请求给后端
+    const response = await fetch("/chat", {
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            message: message
+        })
+    })
+
+    // 获取AI回复
+    const data = await response.json()
+
+    // 显示AI回复
+    document.getElementById("chat").innerHTML +=
+        "<p>AI：" + data.reply + "</p>"
+
+    input.value = ""
+}
+
+</script>
 
 </body>
 
