@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 from openai import OpenAI
 from dotenv import load_dotenv
+from fastapi.responses import StreamingResponse
 import os
 
 load_dotenv()
@@ -43,11 +44,18 @@ def chat(request: ChatRequest):
                 "role": "user",
                 "content": request.message
             }
-        ]
+        ],
+        #流式输出
+        stream=True
     )
+# 流式响应（核心为循环）
+    def generate():
 
-    ai_reply = response.choices[0].message.content
+        for chunk in response:
 
-    return {
-        "reply": ai_reply
-    }
+            content = chunk.choices[0].delta.content
+
+            if content:
+                yield content
+
+    return StreamingResponse(generate(), media_type="text/plain")
