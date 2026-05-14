@@ -4,6 +4,46 @@
 <head>
     <meta charset="UTF-8">
     <title>AI Chat</title>
+    <style>
+
+body {
+    background-color: #e3e6e6;
+    font-family: Arial;
+    padding: 30px;
+}
+
+#chat {
+    max-width: 800px;
+    margin: auto;
+}
+
+.message {
+    padding: 12px;
+    margin: 10px;
+    border-radius: 10px;
+    width: fit-content;
+    max-width: 70%;
+}
+
+.user {
+    background-color: #95ec69;
+    margin-left: auto;
+}
+
+.ai {
+    background-color: white;
+}
+
+input {
+    width: 70%;
+    padding: 10px;
+}
+
+button {
+    padding: 10px;
+}
+
+</style>
 </head>
 
 <body>
@@ -19,16 +59,20 @@
     <div id="chat"></div>
 
 <script>
-
+//定义发送消息的函数
 async function sendMessage() {
 
+    // 获取用户输入
     const input = document.getElementById("userInput")
-
     const message = input.value
 
     // 显示用户消息
     document.getElementById("chat").innerHTML +=
-        "<p>你：" + message + "</p>"
+        `
+<div class="message user">
+    你：${message}
+</div>
+`
 
     // 发送请求给后端
     const response = await fetch("/chat", {
@@ -38,6 +82,7 @@ async function sendMessage() {
             "Content-Type": "application/json"
         },
 
+// 请求体包含用户消息
         body: JSON.stringify({
             message: message
         })
@@ -48,7 +93,11 @@ async function sendMessage() {
 
     // 显示AI回复
     document.getElementById("chat").innerHTML +=
-        "<p>AI：" + data.reply + "</p>"
+        `
+<div class="message ai">
+    AI：${data.reply}
+</div>
+`
 
     input.value = ""
 }
