@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>AI Chat</title>
+    <style>
+
+body {
+    background-color: #e3e6e6;
+    font-family: Arial;
+    padding: 30px;
+}
+
+#chat {
+    max-width: 800px;
+    margin: auto;
+}
+
+.message {
+    padding: 12px;
+    margin: 10px;
+    border-radius: 10px;
+    width: fit-content;
+    max-width: 70%;
+}
+
+.user {
+    background-color: #95ec69;
+    margin-left: auto;
+}
+
+.ai {
+    background-color: white;
+}
+
+input {
+    width: 70%;
+    padding: 10px;
+}
+
+button {
+    padding: 10px;
+}
+
+</style>
+</head>
+
+<body>
+
+    <h1>我的AI助手</h1>
+
+    <input type="text" id="userInput">
+
+    <button onclick="sendMessage()">
+        发送
+    </button>
+
+    <div id="chat"></div>
+
+<script>
+//定义发送消息的函数
+async function sendMessage() {
+
+    // 获取用户输入
+    const input = document.getElementById("userInput")
+    const message = input.value
+
+    // 显示用户消息
+    document.getElementById("chat").innerHTML +=
+        `
+<div class="message user">
+    你：${message}
+</div>
+`
+
+    // 发送请求给后端
+    const response = await fetch("/chat", {
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+// 请求体包含用户消息
+        body: JSON.stringify({
+            message: message
+        })
+    })
+
+    // 获取AI回复
+const reader = response.body.getReader()
+
+const decoder = new TextDecoder()
+
+let aiMessage = ""
+
+const aiDiv = document.createElement("div")
+
+aiDiv.className = "message ai"
+
+document.getElementById("chat").appendChild(aiDiv)
+
+while (true) {
+
+    const { done, value } = await reader.read()
+
+    if (done) {
+        break
+    }
+
+    const text = decoder.decode(value)
+
+    aiMessage += text
+
+    aiDiv.innerHTML = "AI：" + aiMessage
+}
+
+    // 显示AI回复
+    document.getElementById("chat").innerHTML +=
+        `
+<div class="message ai">
+    AI：${data.reply}
+</div>
+`
+
+    input.value = ""
+}
+
+</script>
+
+</body>
+
+</html>
