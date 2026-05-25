@@ -15,6 +15,8 @@ body {
 #chat {
     max-width: 800px;
     margin: auto;
+    height: 500px;
+    overflow-y: auto;
 }
 
 .message {
@@ -44,13 +46,26 @@ button {
 }
 
 </style>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 </head>
 
 <body>
 
-    <h1>我的AI助手</h1>
+    <h1>陈文坚的AI助手</h1>
 
-    <input type="text" id="userInput">
+    <!-- 键盘触发事件 -->
+    <input
+    type="text"
+    id="userInput"
+    onkeydown="handleKey(event)"
+>
+
 
     <button onclick="sendMessage()">
         发送
@@ -66,7 +81,7 @@ async function sendMessage() {
     const input = document.getElementById("userInput")
     const message = input.value
 
-    // 显示用户消息
+    // 显示用户消息，并添加到聊天框中
     document.getElementById("chat").innerHTML +=
         `
 <div class="message user">
@@ -74,10 +89,10 @@ async function sendMessage() {
 </div>
 `
 
-    // 发送请求给后端
+    // 发送请求给后端，并等待AI回复
     const response = await fetch("/chat", {
         method: "POST",
-
+// 设置请求头，指定内容类型为JSON
         headers: {
             "Content-Type": "application/json"
         },
@@ -88,13 +103,14 @@ async function sendMessage() {
         })
     })
 
+
     // 获取AI回复
 const reader = response.body.getReader()
 
 const decoder = new TextDecoder()
 
 let aiMessage = ""
-
+// 创建一个新的div元素来显示AI消息
 const aiDiv = document.createElement("div")
 
 aiDiv.className = "message ai"
@@ -102,9 +118,10 @@ aiDiv.className = "message ai"
 document.getElementById("chat").appendChild(aiDiv)
 
 while (true) {
-
+// 读取流数据
     const { done, value } = await reader.read()
 
+// 如果读取完成，退出循环
     if (done) {
         break
     }
@@ -113,18 +130,26 @@ while (true) {
 
     aiMessage += text
 
-    aiDiv.innerHTML = "AI：" + aiMessage
+aiDiv.innerHTML =
+    "AI：<br>" + marked.parse(aiMessage)
+
+hljs.highlightAll()
+}
+// 清空输入框
+    input.value = ""
 }
 
-    // 显示AI回复
-    document.getElementById("chat").innerHTML +=
-        `
-<div class="message ai">
-    AI：${data.reply}
-</div>
-`
+//定义键盘事件处理函数
+function handleKey(event) {
 
-    input.value = ""
+    if (event.key === "Enter") {
+
+        //调用发送消息的函数
+        sendMessage()
+        //更新滚动条位置
+        const chatBox = document.getElementById("chat")
+        chatBox.scrollTop = chatBox.scrollHeight
+    }
 }
 
 </script>
