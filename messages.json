@@ -8,47 +8,15 @@
         "content": "hello"
     },
     {
-        "role": "user",
-        "content": "？"
+        "role": "assistant",
+        "content": "Hello! How can I assist you today?"
     },
     {
         "role": "user",
-        "content": "hi"
-    },
-    {
-        "role": "user",
-        "content": "hi"
-    },
-    {
-        "role": "user",
-        "content": "hi"
-    },
-    {
-        "role": "user",
-        "content": "hi"
-    },
-    {
-        "role": "user",
-        "content": "hi"
+        "content": "我叫什么"
     },
     {
         "role": "assistant",
-        "content": "你好！有什么可以帮你的吗？ 😊"
-    },
-    {
-        "role": "user",
-        "content": "我叫陈文坚你记住了"
-    },
-    {
-        "role": "assistant",
-        "content": "好的，陈文坚，我记住你的名字了！😊  \n以后有什么需要帮忙的，随时找我～"
-    },
-    {
-        "role": "user",
-        "content": "hi"
-    },
-    {
-        "role": "assistant",
-        "content": "Hi，陈文坚！😊 有什么可以帮你的吗？"
+        "content": "抱歉，我无法知道您的名字。在对话中您没有告诉我您的名字。如果您愿意告诉我，我会很高兴用您的名字来称呼您！"
     }
 ]

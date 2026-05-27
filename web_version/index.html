@@ -71,6 +71,10 @@ href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.m
         发送
     </button>
 
+    <button onclick="clearChat()">
+    新聊天
+    </button>
+
     <div id="chat"></div>
 
 <script>
@@ -153,6 +157,16 @@ function handleKey(event) {
         const chatBox = document.getElementById("chat")
         chatBox.scrollTop = chatBox.scrollHeight
     }
+}
+
+function clearChat() {
+    fetch("/clear", {
+        method: "POST"
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("chat").innerHTML = "";
+    });
 }
 
 </script>

@@ -97,8 +97,35 @@ def chat(request: ChatRequest):
                 ensure_ascii=False,
                 indent=4
             )
-# 返回流式响应
+    # 返回流式响应
     return StreamingResponse(
         generate(),
         media_type="text/plain"
     )
+
+# 清空聊天记录
+@app.post("/clear")
+def clear_chat():
+
+    global messages
+
+    messages = [
+        {
+            "role": "system",
+            "content": "你是一个AI助手"
+        }
+    ]
+
+    with open("messages.json", "w", encoding="utf-8") as f:
+
+        json.dump(
+            messages,
+            f,
+            ensure_ascii=False,
+            indent=4
+        )
+
+    return {
+        "message": "聊天已清空"
+    }
+
