@@ -127,6 +127,9 @@ while (true) {
     }
 
     const text = decoder.decode(value)
+    if (text === "null") {
+    continue
+    }
 
     aiMessage += text
 

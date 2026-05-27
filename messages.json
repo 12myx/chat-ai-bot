@@ -1,0 +1,54 @@
+[
+    {
+        "role": "system",
+        "content": "你是一个AI助手"
+    },
+    {
+        "role": "user",
+        "content": "hello"
+    },
+    {
+        "role": "user",
+        "content": "？"
+    },
+    {
+        "role": "user",
+        "content": "hi"
+    },
+    {
+        "role": "user",
+        "content": "hi"
+    },
+    {
+        "role": "user",
+        "content": "hi"
+    },
+    {
+        "role": "user",
+        "content": "hi"
+    },
+    {
+        "role": "user",
+        "content": "hi"
+    },
+    {
+        "role": "assistant",
+        "content": "你好！有什么可以帮你的吗？ 😊"
+    },
+    {
+        "role": "user",
+        "content": "我叫陈文坚你记住了"
+    },
+    {
+        "role": "assistant",
+        "content": "好的，陈文坚，我记住你的名字了！😊  \n以后有什么需要帮忙的，随时找我～"
+    },
+    {
+        "role": "user",
+        "content": "hi"
+    },
+    {
+        "role": "assistant",
+        "content": "Hi，陈文坚！😊 有什么可以帮你的吗？"
+    }
+]

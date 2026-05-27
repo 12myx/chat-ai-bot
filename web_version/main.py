@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from openai import OpenAI
 from dotenv import load_dotenv
 from fastapi.responses import StreamingResponse
+import json
 import os
 
 load_dotenv()
@@ -18,12 +19,22 @@ client = OpenAI(
     api_key=api_key,
     base_url="https://api.deepseek.com"
 )
-messages = [
-    {
-        "role": "system",
-        "content": "你是一个AI助手"
-    }
-]
+
+#打开聊天记录文件
+try:
+
+    with open("messages.json", "r", encoding="utf-8") as f:
+
+        messages = json.load(f)
+
+except (FileNotFoundError, json.JSONDecodeError):
+
+    messages = [
+        {
+            "role": "system",
+            "content": "你是一个AI助手"
+        }
+    ]
 # 打开网页
 @app.get("/")
 def home():
@@ -37,11 +48,20 @@ class ChatRequest(BaseModel):
 # AI聊天接口
 @app.post("/chat")
 def chat(request: ChatRequest):
-    # 构建消息列表
+    # 用户输入添加到消息列表
     messages.append({
         "role": "user",
         "content": request.message
     })
+    #保存聊天记录
+    with open("messages.json", "w", encoding="utf-8") as f:
+
+        json.dump(
+            messages,
+            f,
+            ensure_ascii=False,
+            indent=4
+        )
 
     response = client.chat.completions.create(
         model="deepseek-chat",
@@ -58,7 +78,7 @@ def chat(request: ChatRequest):
 
             content = chunk.choices[0].delta.content
 
-            if content:
+            if content is not None:
 
                 ai_reply += content
 
@@ -68,3 +88,17 @@ def chat(request: ChatRequest):
             "role": "assistant",
             "content": ai_reply
         })
+
+        #保存AI回复
+        with open("messages.json", "w", encoding="utf-8") as f:
+            json.dump(
+                messages,
+                f,
+                ensure_ascii=False,
+                indent=4
+            )
+# 返回流式响应
+    return StreamingResponse(
+        generate(),
+        media_type="text/plain"
+    )
