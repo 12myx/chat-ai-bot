@@ -20,15 +20,6 @@ client = OpenAI(
     api_key=api_key,
     base_url="https://api.deepseek.com"
 )
-# 当前聊天ID（默认）
-conversations = {
-    "default": [
-        {
-            "role": "system",
-            "content": "你是一个AI助手"
-        }
-    ]
-}
 
 # 打开网页
 @app.get("/")
@@ -71,7 +62,7 @@ def chat(request: ChatRequest):
 
     response = client.chat.completions.create(
         model="deepseek-chat",
-        messages=conversations[current_chat],
+        messages=messages,
         stream=True
     )
 
@@ -97,11 +88,10 @@ def chat(request: ChatRequest):
             ]
         
         # 添加AI回复到消息列表
-        conversations[current_chat].append({
+        messages.append({
             "role": "assistant",
             "content": ai_reply
         })
-
 
         #保存AI回复
         with open("messages.json", "w", encoding="utf-8") as f:
@@ -117,57 +107,50 @@ def chat(request: ChatRequest):
         media_type="text/plain"
     )
 
-# 清空聊天记录的接口
-@app.post("/new_chat")
-def new_chat():
-
-    global current_chat
-
-    chat_id = f"chat_{len(conversations)}"
-
-    conversations[chat_id] = [
+# 清空聊天记录
+@app.post("/clear")
+def clear_chat():
+    messages = [
         {
             "role": "system",
             "content": "你是一个AI助手"
         }
     ]
 
-    current_chat = chat_id
+    with open("messages.json", "w", encoding="utf-8") as f:
+        json.dump(
+            messages,
+            f,
+            ensure_ascii=False,
+            indent=4
+        )
 
     return {
-        "chat_id": chat_id
+        "message": "聊天已清空"
     }
 
-# 新聊天功能的接口（创建新聊天并切换到新聊天）
+# 新聊天功能
 @app.post("/new_chat")
 def new_chat():
-
-    global current_chat
-
-    chat_id = f"chat_{len(conversations)}"
-
-    conversations[chat_id] = [
+    # 创建新的聊天ID
+    chat_id = str(uuid.uuid4())[:8]
+    
+    # 重置消息列表
+    messages = [
         {
             "role": "system",
             "content": "你是一个AI助手"
         }
     ]
 
-    current_chat = chat_id
+    with open("messages.json", "w", encoding="utf-8") as f:
+        json.dump(
+            messages,
+            f,
+            ensure_ascii=False,
+            indent=4
+        )
 
     return {
         "chat_id": chat_id
-    }
-# 获取聊天记录的接口
-@app.post("/switch_chat")
-def switch_chat(data: dict):
-
-    global current_chat
-
-    chat_id = data["chat_id"]
-
-    current_chat = chat_id
-
-    return {
-        "messages": conversations[chat_id]
     }
