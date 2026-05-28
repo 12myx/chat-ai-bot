@@ -307,6 +307,7 @@ async function newChat() {
         const div = document.createElement("div")
 
         div.innerHTML = data.chat_id
+        div.onclick = () => switchChat(data.chat_id)
 
         document.getElementById("chatList").appendChild(div)
 
@@ -314,6 +315,53 @@ async function newChat() {
     } catch (error) {
         console.error("创建新聊天时出错:", error);
     }
+}
+// 定义切换聊天的函数
+async function switchChat(chatId) {
+
+    const response = await fetch("/switch_chat", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            chat_id: chatId
+        })
+    })
+
+    const data = await response.json()
+
+    const chatBox = document.getElementById("chat")
+
+    chatBox.innerHTML = ""
+
+    data.messages.forEach(msg => {
+
+        if (msg.role === "system") {
+            return
+        }
+
+        const div = document.createElement("div")
+
+        div.className =
+            msg.role === "user"
+            ? "message user"
+            : "message ai"
+
+        div.innerHTML =
+            msg.role === "user"
+            ? `你：${msg.content}`
+            : "AI：<br>" + marked.parse(msg.content)
+
+        chatBox.appendChild(div)
+    })
+
+    hljs.highlightAll()
+
+    scrollToBottom()
 }
 
 </script>

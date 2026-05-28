@@ -117,7 +117,7 @@ def chat(request: ChatRequest):
         media_type="text/plain"
     )
 
-# 清空聊天记录
+# 清空聊天记录的接口
 @app.post("/new_chat")
 def new_chat():
 
@@ -138,7 +138,7 @@ def new_chat():
         "chat_id": chat_id
     }
 
-# 新聊天功能
+# 新聊天功能的接口（创建新聊天并切换到新聊天）
 @app.post("/new_chat")
 def new_chat():
 
@@ -157,4 +157,17 @@ def new_chat():
 
     return {
         "chat_id": chat_id
+    }
+# 获取聊天记录的接口
+@app.post("/switch_chat")
+def switch_chat(data: dict):
+
+    global current_chat
+
+    chat_id = data["chat_id"]
+
+    current_chat = chat_id
+
+    return {
+        "messages": conversations[chat_id]
     }
