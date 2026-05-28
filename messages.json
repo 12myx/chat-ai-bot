@@ -2,21 +2,5 @@
     {
         "role": "system",
         "content": "你是一个AI助手"
-    },
-    {
-        "role": "user",
-        "content": "hello"
-    },
-    {
-        "role": "assistant",
-        "content": "Hello! How can I assist you today?"
-    },
-    {
-        "role": "user",
-        "content": "我叫什么"
-    },
-    {
-        "role": "assistant",
-        "content": "抱歉，我无法知道您的名字。在对话中您没有告诉我您的名字。如果您愿意告诉我，我会很高兴用您的名字来称呼您！"
     }
 ]
